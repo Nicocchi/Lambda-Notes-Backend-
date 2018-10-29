@@ -1,6 +1,9 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
+
+const configureNoteRoutes = require("../routes/notesRoutes.js");
 
 module.exports = server => {
-    server.use(express.json(), cors());
-}
+  server.use(express.json(), cors());
+  configureNoteRoutes(server);
+};
