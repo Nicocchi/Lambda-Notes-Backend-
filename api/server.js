@@ -1,9 +1,9 @@
 const express = require('express');
-const helmet = require('helmet');
+
+const configureMiddleware = require('../modules/middlewares.js');
 
 const server = express();
-
-server.use(helmet(), express.json());
+configureMiddleware(server);
 
 // Sanity Check
 server.get('/', (req, res) => {
