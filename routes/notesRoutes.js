@@ -3,6 +3,7 @@ const logger = require("../modules/Logger.js");
 
 module.exports = server => {
   server.get("/api/notes/get/all", getNotes);
+  server.get("/api/notes/get/:id", getNote);
   server.post("/api/notes/create", addNote);
   server.put("/api/notes/edit/:id", updateNote);
 };
@@ -22,6 +23,23 @@ function getNotes(req, res) {
       res.send(notes);
     })
     .catch(err => res.status(500).send({ error: `Internal Server Error` }));
+}
+
+/**
+ * Return the note from the given ID
+ * @param req - request
+ * @param res - response
+ */
+function getNote(req, res) {
+  const { id } = req.params;
+  notesDb
+    .getById(id)
+    .then(note => {
+      if (!note) return res.status(422).json({ error: `Note does not exist` });
+
+      res.status(200).json(note);
+    })
+    .catch(err => res.status(500).json({ error: `Internal Server Error` }));
 }
 
 /**
