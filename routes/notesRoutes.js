@@ -4,6 +4,7 @@ const logger = require("../modules/Logger.js");
 module.exports = server => {
   server.get("/api/notes/get/all", getNotes);
   server.post("/api/notes/create", addNote);
+  server.put("/api/notes/edit/:id", updateNote);
 };
 
 /**
@@ -38,8 +39,25 @@ function addNote(req, res) {
       // Return the ID
       res.status(201).json(noteId);
     })
-    .catch(err => {
-      logger.log(err, "error");
-      res.status(500).json({ error: `Internal Server Error` });
-    });
+    .catch(err => res.status(500).json({ error: `Internal Server Error` }));
+}
+
+/**
+ * Updates an existing note from the given ID
+ * @param req - request
+ * @param res - response
+ */
+function updateNote(req, res) {
+  const { id } = req.params;
+  const { title, content, completed, is_public, user_id } = req.body;
+
+  const newNote = { title, content, completed, is_public, user_id };
+  notesDb
+    .update(id, newNote)
+    .then(note => {
+      if (!note) return res.status(422).json({ error: `Note does not exist` });
+
+      res.status(200).json(note);
+    })
+    .catch(err => res.status(500).json({ error: `Internal Server Error` }));
 }
