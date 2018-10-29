@@ -1,21 +1,9 @@
-const express = require('express');
-const helmet = require('helmet');
-
-const server = express();
+const server = require('./api/server.js');
+const logger = require('./modules/Logger.js');
 const port = 8000;
 
-server.use(helmet(), express.json());
-
-// Sanity Check
-server.get('/', (req, res) => {
-    res.send('<h1>Sanity Check<h1>')
-});
-
-
-function runServer() {
-    console.log('\x1b[34m', `\n[server] started server`);
-    console.log(`[server] running on port: ${port}\n`);
-    console.log('\x1b[0m', '');
+function log() {
+    logger.log(`Starting server`);
+    logger.log(`Server started on port: ${port}`, 'ready');
 }
-
-server.listen(port, runServer());
+server.listen(port, log());
