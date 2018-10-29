@@ -1,0 +1,29 @@
+{
+  "name": "lambda-notes-backend-",
+  "version": "1.0.0",
+  "description": "backend server for lambda notes app",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watch --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nicocchi/Lambda-Notes-Backend-.git"
+  },
+  "author": "Jeremy Boggs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Nicocchi/Lambda-Notes-Backend-/issues"
+  },
+  "homepage": "https://github.com/Nicocchi/Lambda-Notes-Backend-#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.4",
+    "helmet": "^3.14.0",
+    "knex": "^0.15.2",
+    "sqlite3": "^4.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.5"
+  }
+}
