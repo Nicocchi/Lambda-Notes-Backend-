@@ -6,6 +6,7 @@ module.exports = server => {
   server.get("/api/notes/get/:id", getNote);
   server.post("/api/notes/create", addNote);
   server.put("/api/notes/edit/:id", updateNote);
+  server.delete("/api/notes/remove/:id", removeNote);
 };
 
 /**
@@ -75,6 +76,22 @@ function updateNote(req, res) {
     .then(note => {
       if (!note) return res.status(422).json({ error: `Note does not exist` });
 
+      res.status(200).json(note);
+    })
+    .catch(err => res.status(500).json({ error: `Internal Server Error` }));
+}
+
+/**
+ * Remove an existing note and return the 1 or 0
+ * @param req
+ * @param res
+ */
+function removeNote(req, res) {
+  const { id } = req.params;
+  notesDb
+    .remove(id)
+    .then(note => {
+      if (!note) return res.status(404).json({ error: `Note does not exist` });
       res.status(200).json(note);
     })
     .catch(err => res.status(500).json({ error: `Internal Server Error` }));
