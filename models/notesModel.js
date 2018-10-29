@@ -1,14 +1,14 @@
-const knex = require('knex');
+const knex = require("knex");
 
-const knexConfig = require('../knexfile.js');
+const knexConfig = require("../knexfile.js");
 const db = knex(knexConfig.development);
 
 module.exports = {
-    get,
-    getById,
-    add,
-    update,
-    remove,
+  get,
+  getById,
+  add,
+  update,
+  remove
 };
 
 /**
@@ -16,7 +16,7 @@ module.exports = {
  * @returns {*}
  */
 function get() {
-    return db('notes');
+  return db("notes");
 }
 
 /**
@@ -25,7 +25,10 @@ function get() {
  * @returns {*} - Returns every note from the given ID
  */
 function getById(id) {
-    return db.select('*').from('notes').where({ id });
+  return db
+    .select("*")
+    .from("notes")
+    .where("id", id);
 }
 
 /**
@@ -34,7 +37,10 @@ function getById(id) {
  * @returns {*} - Returns every note from the given user ID
  */
 function getByUser(id) {
-    return db.select('*').from('notes').where('user_id', id);
+  return db
+    .select("*")
+    .from("notes")
+    .where("user_id", id);
 }
 
 /**
@@ -43,7 +49,9 @@ function getByUser(id) {
  * @returns {*} - Returns the notes
  */
 function add(note) {
-    return db('notes').insert(note).into('notes');
+  return db("notes")
+    .insert(note)
+    .into("notes");
 }
 
 /**
@@ -53,7 +61,9 @@ function add(note) {
  * @returns {*} - Returns the note ID
  */
 function update(id, changes) {
-    return db('notes').where({ id }).update(changes);
+  return db("notes")
+    .where({ id })
+    .update(changes);
 }
 
 /**
@@ -62,5 +72,7 @@ function update(id, changes) {
  * @returns {*} - Returns the note ID
  */
 function remove(id) {
-    return db('notes').where({ id }).del();
+  return db("notes")
+    .where({ id })
+    .del();
 }
