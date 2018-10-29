@@ -1,11 +1,10 @@
 const notesDb = require("../models/notesModel.js");
-const logger = require("../modules/Logger.js");
 
 module.exports = server => {
   server.get("/api/notes/get/all", getNotes);
   server.get("/api/notes/get/:id", getNote);
-  server.post("/api/notes/create", addNote);
-  server.put("/api/notes/edit/:id", updateNote);
+  server.post("/api/notes/create", validation, addNote);
+  server.put("/api/notes/edit/:id", validation, updateNote);
   server.delete("/api/notes/remove/:id", removeNote);
 };
 
@@ -95,4 +94,14 @@ function removeNote(req, res) {
       res.status(200).json(note);
     })
     .catch(err => res.status(500).json({ error: `Internal Server Error` }));
+}
+
+// MIDDLEWARE
+function validation(req, res, next) {
+  if (!req.body.title)
+    return res.status(404).json({ error: `Must have a title` });
+  if (!req.body.user_id) req.body.user_id = 1;
+  if (!req.body.completed) req.body.completed = false;
+  if (!req.body.is_public) req.body.is_public = false;
+  next();
 }
