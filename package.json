@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Nicocchi/Lambda-Notes-Backend-#readme",
   "dependencies": {
     "cors": "^2.8.4",
+    "dotenv": "^6.1.0",
     "express": "^4.16.4",
     "helmet": "^3.14.0",
     "knex": "^0.15.2",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "chalk": "^2.4.1",
-    "nodemon": "^1.18.5"
+    "nodemon": "^1.18.5",
+    "prettier": "^1.14.3"
   }
 }
