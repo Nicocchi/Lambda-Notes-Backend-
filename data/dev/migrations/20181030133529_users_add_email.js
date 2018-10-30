@@ -1,9 +1,6 @@
 exports.up = function(knex, Promise) {
   return knex.schema.table("users", tbl => {
-    tbl
-      .string("email", 255)
-      .notNullable()
-      .unique();
+    tbl.string("email", 128).unique();
   });
 };
 

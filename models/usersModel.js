@@ -42,7 +42,8 @@ function getByUsername(username) {
   return db
     .select("*")
     .from("users")
-    .where("username", username);
+    .where("username", username)
+    .first();
 }
 
 /**
