@@ -1,11 +1,14 @@
 const notesDb = require("../models/notesModel.js");
 
+const jwt = require("jsonwebtoken");
+const jwtKey = process.env.JWTKEY;
+
 module.exports = server => {
-  server.get("/api/notes/get/all", getNotes);
-  server.get("/api/notes/get/:id", getNote);
-  server.post("/api/note/create", validation, addNote);
-  server.put("/api/note/edit/:id", validation, updateNote);
-  server.delete("/api/note/remove/:id", removeNote);
+  server.get("/api/notes/get/all", authenticate, getNotes);
+  server.get("/api/notes/get/:id", authenticate, getNote);
+  server.post("/api/note/create", validation, authenticate, addNote);
+  server.put("/api/note/edit/:id", validation, authenticate, updateNote);
+  server.delete("/api/note/remove/:id", authenticate, removeNote);
 };
 
 /**
@@ -107,4 +110,30 @@ function validation(req, res, next) {
   if (!req.body.completed) req.body.completed = false;
   if (!req.body.is_public) req.body.is_public = false;
   next();
+}
+
+/**
+ * Authenticates the JSON Web Token to acquire access to restricted routes
+ * @param req - Request
+ * @param res - Response
+ * @param next - Continues function
+ * @returns {*}
+ */
+function authenticate(req, res, next) {
+  const token = req.get("Authorization");
+
+  // If token, verify the token and set decoded
+  if (token) {
+    jwt.verify(token, jwtKey, (err, decoded) => {
+      if (err) return res.status(401).json(err);
+
+      req.decoded = decoded;
+
+      next();
+    });
+  } else {
+    return res.status(401).json({
+      error: "No token provided, must be set on Authorization Header"
+    });
+  }
 }
