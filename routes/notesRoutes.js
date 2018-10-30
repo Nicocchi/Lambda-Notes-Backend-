@@ -3,9 +3,9 @@ const notesDb = require("../models/notesModel.js");
 module.exports = server => {
   server.get("/api/notes/get/all", getNotes);
   server.get("/api/notes/get/:id", getNote);
-  server.post("/api/notes/create", validation, addNote);
-  server.put("/api/notes/edit/:id", validation, updateNote);
-  server.delete("/api/notes/remove/:id", removeNote);
+  server.post("/api/note/create", validation, addNote);
+  server.put("/api/note/edit/:id", validation, updateNote);
+  server.delete("/api/note/remove/:id", removeNote);
 };
 
 /**
@@ -20,7 +20,7 @@ function getNotes(req, res) {
       // If no notes, return an empty array
       if (!notes) return res.status(200).json({ data: [] });
 
-      res.send(notes);
+      res.json(notes);
     })
     .catch(err => res.status(500).send({ error: `Internal Server Error` }));
 }
@@ -35,7 +35,7 @@ function getNote(req, res) {
   notesDb
     .getById(id)
     .then(note => {
-      if (!note) return res.status(422).json({ error: `Note does not exist` });
+      if (!note) return res.status(404).json({ error: `Note does not exist` });
 
       res.status(200).json(note);
     })
@@ -48,9 +48,10 @@ function getNote(req, res) {
  * @param res - response
  */
 function addNote(req, res) {
-  const { title, content, completed, is_public, user_id } = req.body;
+  const { title, content, completed, is_public, user_id, tags } = req.body;
 
-  const newNote = { title, content, completed, is_public, user_id };
+  const newNote = { title, content, completed, is_public, user_id, tags };
+  console.log(newNote);
   notesDb
     .add(newNote)
     .then(noteId => {
@@ -67,13 +68,13 @@ function addNote(req, res) {
  */
 function updateNote(req, res) {
   const { id } = req.params;
-  const { title, content, completed, is_public, user_id } = req.body;
+  const { title, content, completed, is_public, user_id, tags } = req.body;
 
-  const newNote = { title, content, completed, is_public, user_id };
+  const newNote = { title, content, completed, is_public, user_id, tags };
   notesDb
     .update(id, newNote)
     .then(note => {
-      if (!note) return res.status(422).json({ error: `Note does not exist` });
+      if (!note) return res.status(404).json({ error: `Note does not exist` });
 
       res.status(200).json(note);
     })
@@ -100,6 +101,8 @@ function removeNote(req, res) {
 function validation(req, res, next) {
   if (!req.body.title)
     return res.status(404).json({ error: `Must have a title` });
+  if (!req.body.tags) req.body.tags = [];
+  if (!req.body.content) req.body.content = "";
   if (!req.body.user_id) req.body.user_id = 1;
   if (!req.body.completed) req.body.completed = false;
   if (!req.body.is_public) req.body.is_public = false;
