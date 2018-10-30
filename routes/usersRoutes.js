@@ -66,7 +66,19 @@ function registerValidation(req, res, next) {
   if (!req.body.email)
     return res.status(404).json({ error: "Must have a email address" });
   if (validateEmail(req.body.email)) {
-    next();
+    usersDb.getByEmail(req.body.email).then(user => {
+      if (user[0]) {
+        return res.status(422).json({ error: "That email is already taken" });
+      } else {
+        usersDb.getByUsername(req.body.username).then(user => {
+          if (user)
+            return res
+              .status(422)
+              .json({ error: "That username is already taken" });
+          next();
+        });
+      }
+    });
   } else {
     return res.status(422).json({ error: "Must be a valid email address" });
   }
