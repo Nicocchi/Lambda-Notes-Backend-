@@ -6,6 +6,8 @@ const db = knex(knexConfig.development);
 module.exports = {
   get,
   getById,
+  getByUsername,
+  getByEmail,
   add,
   update,
   remove
@@ -29,6 +31,30 @@ function getById(id) {
     .select("*")
     .from("users")
     .where("id", id);
+}
+
+/**
+ * Returns the users with the username
+ * @param username - Username of the user
+ * @returns {*}
+ */
+function getByUsername(username) {
+  return db
+    .select("*")
+    .from("users")
+    .where("username", username);
+}
+
+/**
+ * Returns the user with the email address
+ * @param email - Email address of the user
+ * @returns {*}
+ */
+function getByEmail(email) {
+  return db
+    .select("*")
+    .from("users")
+    .where("email", email);
 }
 
 /**
