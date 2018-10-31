@@ -36,13 +36,15 @@ function login(req, res) {
     .then(user => {
       if (user && bcrypt.compareSync(creds.password, user[0].password)) {
         const token = generateToken({ username: user[0].username });
-        res.status(200).json({ welcome: user[0].username, token });
+        res
+          .status(200)
+          .json({ welcome: user[0].username, token, userId: user[0].id });
       } else {
-        res.status(401).json({ message: "username or Password is incorrect" });
+        res.status(422).json({ error: "Username or Password is incorrect" });
       }
     })
     .catch(err => {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: "Username or Password is incorrect" });
     });
 }
 

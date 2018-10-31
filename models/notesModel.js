@@ -6,6 +6,7 @@ const db = knex(knexConfig.development);
 module.exports = {
   get,
   getById,
+  getByUser,
   add,
   update,
   remove

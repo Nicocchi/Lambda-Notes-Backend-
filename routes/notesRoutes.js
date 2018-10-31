@@ -6,6 +6,7 @@ const jwtKey = process.env.JWTKEY;
 module.exports = server => {
   server.get("/api/notes/get/all", authenticate, getNotes);
   server.get("/api/notes/get/:id", authenticate, getNote);
+  server.get("/api/notes/get/all/:id", authenticate, getUsersNote);
   server.post("/api/note/create", validation, authenticate, addNote);
   server.put("/api/note/edit/:id", validation, authenticate, updateNote);
   server.delete("/api/note/remove/:id", authenticate, removeNote);
@@ -23,7 +24,7 @@ function getNotes(req, res) {
       // If no notes, return an empty array
       if (!notes) return res.status(200).json({ data: [] });
 
-      res.json(notes);
+      res.status(200).json(notes);
     })
     .catch(err => res.status(500).send({ error: `Internal Server Error` }));
 }
@@ -46,6 +47,23 @@ function getNote(req, res) {
 }
 
 /**
+ * Return the note from the given User ID
+ * @param req - request
+ * @param res - response
+ */
+function getUsersNote(req, res) {
+  const { id } = req.params;
+  notesDb
+    .getByUser(id)
+    .then(notes => {
+      if (!notes) return res.status(200).json({ data: [] });
+
+      res.status(200).json(notes);
+    })
+    .catch(err => res.status(500).json({ error: `Internal Server Error` }));
+}
+
+/**
  * Add a note to the database and return the ID of that note
  * @param req - request
  * @param res - response
@@ -54,7 +72,6 @@ function addNote(req, res) {
   const { title, content, completed, is_public, user_id, tags } = req.body;
 
   const newNote = { title, content, completed, is_public, user_id, tags };
-  console.log(newNote);
   notesDb
     .add(newNote)
     .then(noteId => {
