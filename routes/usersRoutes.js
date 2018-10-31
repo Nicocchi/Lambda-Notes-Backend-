@@ -21,7 +21,7 @@ function register(req, res) {
     .then(ids => {
       const id = ids[0];
       const token = generateToken({ username: creds.username });
-      res.status(201).json({ newUserId: id, token });
+      res.status(201).json({ username: creds.username, newUserId: id, token });
     })
     .catch(err => {
       res.status(500).json(err.message);
@@ -38,7 +38,7 @@ function login(req, res) {
         const token = generateToken({ username: user[0].username });
         res
           .status(200)
-          .json({ welcome: user[0].username, token, userId: user[0].id });
+          .json({ username: user[0].username, token, userId: user[0].id });
       } else {
         res.status(422).json({ error: "Username or Password is incorrect" });
       }
